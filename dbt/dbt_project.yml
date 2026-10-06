@@ -13,3 +13,11 @@ test-paths: ["tests"]
 seed-paths: ["seeds"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
+
+models:
+  stored_proc_migration:
+    +static_analysis: strict
+
+unit_tests:
+  stored_proc_migration:
+    +compute: local
