@@ -13,7 +13,3 @@ test-paths: ["tests"]
 seed-paths: ["seeds"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
-flags:
-  require_generic_test_arguments_property: true
-
-# Model configurations
