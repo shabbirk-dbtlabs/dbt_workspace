@@ -1,0 +1,138 @@
+version: 2
+
+models:
+  - name: stg_warehouse_metering_history
+    description: >
+      Staging table for warehouse metering history data from Snowflake Account Usage.
+      Implements incremental loading with CDC based on end_time.
+    columns:
+      - name: start_time
+        description: Start time of the warehouse usage period
+        tests:
+          - not_null
+      - name: end_time
+        description: End time of the warehouse usage period
+        tests:
+          - not_null
+      - name: warehouse_name
+        description: Name of the warehouse
+        tests:
+          - not_null
+      - name: credits_used
+        description: Total credits consumed during the time period
+        tests:
+          - not_null
+      - name: ingestion_time
+        description: Timestamp when the record was loaded into our staging table
+        tests:
+          - not_null
+
+  - name: stg_snowpipes
+    description: >
+      Staging table for Snowpipe metadata from Snowflake Account Usage.
+      Implements incremental loading with CDC based on last_altered timestamp.
+    columns:
+      - name: pipe_id
+        description: Internal pipe identifier
+        tests:
+          - not_null
+          - unique
+      - name: pipe_name
+        description: Name of the pipe
+        tests:
+          - not_null
+      - name: created
+        description: Timestamp when pipe was created
+        tests:
+          - not_null
+      - name: ingestion_time
+        description: Timestamp when the record was loaded into our staging table
+        tests:
+          - not_null
+
+  - name: stg_snowpipe_usage_history
+    description: >
+      Staging table for Snowpipe usage history from Snowflake Account Usage.
+      Implements incremental loading with CDC based on end_time.
+    columns:
+      - name: pipe_id
+        description: Internal pipe identifier
+        tests:
+          - not_null
+      - name: start_time
+        description: Start time of the usage period
+        tests:
+          - not_null
+      - name: end_time
+        description: End time of the usage period
+        tests:
+          - not_null
+      - name: ingestion_time
+        description: Timestamp when the record was loaded into our staging table
+        tests:
+          - not_null
+
+  - name: stg_query_history
+    description: >
+      Staging table for query history from Snowflake Account Usage.
+      Implements incremental loading with CDC based on end_time.
+    columns:
+      - name: query_id
+        description: Unique identifier for the query
+        tests:
+          - not_null
+          - unique
+      - name: start_time
+        description: Query start timestamp
+        tests:
+          - not_null
+      - name: execution_status
+        description: Final execution status (SUCCESS, FAILED, etc.)
+        tests:
+          - not_null
+      - name: ingestion_time
+        description: Timestamp when the record was loaded into our staging table
+        tests:
+          - not_null
+
+  - name: stg_task_versions
+    description: >
+      Staging table for task versions from Snowflake Account Usage.
+      Implements incremental loading with CDC based on graph_version_created_on.
+    columns:
+      - name: id
+        description: Internal task identifier
+        tests:
+          - not_null
+      - name: name
+        description: Name of the task
+        tests:
+          - not_null
+      - name: graph_version_created_on
+        description: Timestamp when this version was created
+        tests:
+          - not_null
+      - name: ingestion_time
+        description: Timestamp when the record was loaded into our staging table
+        tests:
+          - not_null
+
+  - name: stg_task_history
+    description: >
+      Staging table for task execution history from Snowflake Account Usage.
+      Implements incremental loading with CDC based on scheduled_time.
+    columns:
+      - name: scheduled_time
+        description: Time when task was scheduled to run
+        tests:
+          - not_null
+      - name: state
+        description: Execution state (SUCCEEDED, FAILED, etc.)
+        tests:
+          - not_null
+      - name: ingestion_time
+        description: Timestamp when the record was loaded into our staging table
+        tests:
+          - not_null
+
+

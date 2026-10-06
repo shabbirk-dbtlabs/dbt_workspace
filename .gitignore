@@ -2,6 +2,8 @@ target/
 dbt_modules/
 dbt_packages/
 logs/
+dbt_internal_packages/
+
 venv
 .vscode/
 .DS_Store

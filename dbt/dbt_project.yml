@@ -1,32 +1,45 @@
-name: 'secret'
+name: 'stored_proc_migration'
 version: '1.0.0'
 config-version: 2
 
-vars:
-  my_cool_var: '2016-06-01'
+profile: 'snowflake_demo'
 
+# These configurations specify where dbt should look for different types of files.
+# The `model-paths` config, for example, states that models in this project can be
+# found in the "models/" directory. You probably won't need to change these!
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+flags:
+  require_generic_test_arguments_property: true
+
+# Model configurations
 models:
-  secret:
-    +materialized: view
-    +schema: secret
-    +post-hook: "{{validate_model_name(model)}}"
-
-
-    demos:
-      enforce_limit:
-        +post-hook: "{{validate_sql_contains_limit(model)}}"
-
-
-    stored_procedures:
-      +tags: ['stored_procedures']
+  stored_proc_migration:
+    # Global settings
+    +materialized: table
+    +on_schema_change: fail
+    
+    # Staging models
+    staging:
+      +materialized: incremental
+      +on_schema_change: fail
+      +tags: ["staging", "snowflake_usage"]
+      
+    # Mart models  
+    marts:
       +materialized: table
-      +schema: stored_procedures_to_dbt_models
+      +tags: ["mart", "snowflake_usage"]
 
-      mart:
-        +grants:
-          select:    "{{target.database}}_read"
-          ownership: "{{target.database}}_write"
-
+# Seeds configuration
 seeds:
-  secret:
-    +enabled: False # disabled because these sources are static and take a few minutes to upload.
+  stored_proc_migration:
+    +quote_columns: false
+
+# Test configuration
+tests:
+  stored_proc_migration:
+    +store_failures: true
